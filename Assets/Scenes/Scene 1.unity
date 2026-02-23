@@ -555,6 +555,9 @@ MonoBehaviour:
   playerTransforms:
   - {fileID: 1148991615}
   - {fileID: 1285255942}
+  playerControllerScripts:
+  - {fileID: 1148991613}
+  - {fileID: 1285255940}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
