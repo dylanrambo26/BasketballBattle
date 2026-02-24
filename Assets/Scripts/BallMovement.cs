@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BallMovement : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class BallMovement : MonoBehaviour
     
     public enum BallPossesion { None, Player1, Player2}
     public BallPossesion ballPossesion = BallPossesion.None;
+
+    public UnityEvent player1Score;
+    public UnityEvent player2Score;
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
@@ -117,4 +121,20 @@ public class BallMovement : MonoBehaviour
                (!isPlayer1 && ballPossesion == BallPossesion.Player2);
     }
     //TODO Fix ball not shooting when dribbling on the ground
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Player1ScoreTrigger"))
+        {
+            player2Score.Invoke();
+            ballPossesion = BallPossesion.Player1;
+            AttachBallToPlayer(playerTransforms[0].transform);
+        }
+        else if (col.gameObject.CompareTag("Player2ScoreTrigger"))
+        {
+            player1Score.Invoke();
+            ballPossesion = BallPossesion.Player2;
+            AttachBallToPlayer(playerTransforms[1].transform);
+        }
+    }
 }

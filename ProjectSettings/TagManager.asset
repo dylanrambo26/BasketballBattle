@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Ball
   - Player2
+  - Player1ScoreTrigger
+  - Player2ScoreTrigger
   layers:
   - Default
   - TransparentFX
