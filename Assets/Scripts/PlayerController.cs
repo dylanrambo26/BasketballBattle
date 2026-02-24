@@ -6,12 +6,15 @@ public class PlayerController : MonoBehaviour
     
     private float horizontalInput;
     private float moveSpeed = 6f;
-    private float jumpForce = 9f;
-    
-    private bool isPlayer1 = false;
+    private float jumpShotForce = 9f;
+    private float blockJumpForce = 12f;
+    private float jumpForce;
+    public bool isPlayer1 = false;
     private Rigidbody2D rigidBody;
 
     public bool isGrounded = true;
+    
+    public BallMovement ballMovementScript;
     private void Start()
     {
         isPlayer1 = gameObject == GameObject.FindGameObjectWithTag("Player1");
@@ -24,14 +27,24 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W) && isGrounded)
             {
+                jumpForce = ballMovementScript.IsPossessedBy(true) ? jumpShotForce : blockJumpForce;
                 rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, jumpForce);
+            }
+            else if (Input.GetKeyDown(KeyCode.S) && ballMovementScript.IsPossessedBy(true))
+            {
+                ballMovementScript.ShootBall(true);
             }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
             {
+                jumpForce = ballMovementScript.IsPossessedBy(false) ? jumpShotForce : blockJumpForce;
                 rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, jumpForce);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) && ballMovementScript.IsPossessedBy(false))
+            {
+                ballMovementScript.ShootBall(false);
             }
         }
     }
