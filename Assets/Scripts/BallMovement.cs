@@ -14,7 +14,10 @@ public class BallMovement : MonoBehaviour
     private float dribbleDistanceFromBody = 1f;
     private float inAirPosition = 1f;
     private Vector3 dribbleStartPos = new Vector3(1f, -0.5f, 0);
-    private float shotForce = 12f;
+    private float shotForce = 9f;
+    private float minArc = 0.2f;
+    private float maxArc = 2f;
+    //private float arcUp = 2;
 
     private Collider2D ballCollider;
     private float player1OutOfBounds = 10f;
@@ -102,17 +105,22 @@ public class BallMovement : MonoBehaviour
         transform.localPosition = new Vector3(ballRelativeToPlayerX, 0, 0);
     }
 
-    public void ShootBall(bool isPlayer1)
+    public void ShootBall(bool isPlayer1, float chargeAmount)
     {
+        chargeAmount = Mathf.Clamp01(chargeAmount);
+        float arcAmount = Mathf.Lerp(minArc, maxArc, chargeAmount);
+
+        float xDirection = isPlayer1 ? 1f : -1f;
+        Vector2 direction = new Vector2(xDirection, arcAmount).normalized;
+        
         ballPossesion = BallPossesion.None;
         transform.SetParent(null);
         ballCollider.enabled = true;
 
         rigidBody.bodyType = RigidbodyType2D.Dynamic;
         rigidBody.linearVelocity = Vector2.zero;
-
-        Vector2 direction = isPlayer1 ? new Vector2(3f, 3f) : new Vector2(-3f, 3f);
-        rigidBody.AddForce(direction.normalized * shotForce, ForceMode2D.Impulse);
+        
+        rigidBody.AddForce(direction * shotForce, ForceMode2D.Impulse);
     }
 
     public bool IsPossessedBy(bool isPlayer1)

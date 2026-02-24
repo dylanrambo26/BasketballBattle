@@ -10,6 +10,11 @@ public class PlayerController : MonoBehaviour
     private float blockJumpForce = 12f;
     private float jumpForce;
     public bool isPlayer1 = false;
+
+    private bool isChargingShot;
+    private float chargeStartTime;
+    public float maxChargeTime = 1.2f;
+    
     private Rigidbody2D rigidBody;
 
     public bool isGrounded = true;
@@ -23,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        
         if (isPlayer1)
         {
             if (Input.GetKeyDown(KeyCode.W) && isGrounded)
@@ -30,9 +36,19 @@ public class PlayerController : MonoBehaviour
                 jumpForce = ballMovementScript.IsPossessedBy(true) ? jumpShotForce : blockJumpForce;
                 rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, jumpForce);
             }
-            else if (Input.GetKeyDown(KeyCode.S) && ballMovementScript.IsPossessedBy(true))
+            if (Input.GetKeyDown(KeyCode.S) && ballMovementScript.IsPossessedBy(true))
             {
-                ballMovementScript.ShootBall(true);
+                isChargingShot = true;
+                chargeStartTime = Time.time;
+            }
+
+            if (Input.GetKeyUp(KeyCode.S) && isChargingShot)
+            {
+                isChargingShot = false;
+                float heldTime = Time.time - chargeStartTime;
+                float chargeAmount = Mathf.Clamp01(heldTime / maxChargeTime);
+                
+                ballMovementScript.ShootBall(true, chargeAmount);
             }
         }
         else
@@ -42,9 +58,18 @@ public class PlayerController : MonoBehaviour
                 jumpForce = ballMovementScript.IsPossessedBy(false) ? jumpShotForce : blockJumpForce;
                 rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, jumpForce);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) && ballMovementScript.IsPossessedBy(false))
+            if (Input.GetKeyDown(KeyCode.DownArrow) && ballMovementScript.IsPossessedBy(false))
             {
-                ballMovementScript.ShootBall(false);
+                isChargingShot = true;
+                chargeStartTime = Time.time;
+            }
+            if (Input.GetKeyUp(KeyCode.DownArrow) && isChargingShot)
+            {
+                isChargingShot = false;
+                float heldTime = Time.time - chargeStartTime;
+                float chargeAmount = Mathf.Clamp01(heldTime / maxChargeTime);
+                
+                ballMovementScript.ShootBall(false, chargeAmount);
             }
         }
     }

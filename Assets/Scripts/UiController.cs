@@ -6,9 +6,9 @@ public class UiController : MonoBehaviour
 {
     public TextMeshProUGUI player1ScoreText;
     public TextMeshProUGUI player2ScoreText;
-
+    
     private GameController gameController;
-
+    
     private void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
