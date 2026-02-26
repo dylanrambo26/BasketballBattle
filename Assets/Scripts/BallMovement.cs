@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class BallMovement : MonoBehaviour
 {
@@ -14,7 +16,7 @@ public class BallMovement : MonoBehaviour
     private float dribbleDistanceFromBody = 1f;
     private float inAirPosition = 1f;
     private Vector3 dribbleStartPos = new Vector3(1f, -0.5f, 0);
-    private float shotForce = 9f;
+    private float shotForce = 12f;
     private float minArc = 0.2f;
     private float maxArc = 2f;
     //private float arcUp = 2;
@@ -34,6 +36,8 @@ public class BallMovement : MonoBehaviour
         playerControllerScripts[0] = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerController>();
         playerControllerScripts[1] = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerController>();
         ballCollider = GetComponent<Collider2D>();
+
+        transform.position = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0f, 4f), 0f);
     }
 
     private void FixedUpdate()
@@ -134,15 +138,33 @@ public class BallMovement : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player1ScoreTrigger"))
         {
-            player2Score.Invoke();
-            ballPossesion = BallPossesion.Player1;
-            AttachBallToPlayer(playerTransforms[0].transform);
+            StartCoroutine(BallDropThroughNet(false));
         }
         else if (col.gameObject.CompareTag("Player2ScoreTrigger"))
         {
+            StartCoroutine(BallDropThroughNet(true));
+        }
+    }
+
+    private IEnumerator BallDropThroughNet(bool isPlayer1Score)
+    {
+        if (isPlayer1Score)
+        {
             player1Score.Invoke();
+
+            yield return new WaitForSeconds(1);
+            
             ballPossesion = BallPossesion.Player2;
             AttachBallToPlayer(playerTransforms[1].transform);
+        }
+        else
+        {
+            player2Score.Invoke();
+            
+            yield return new WaitForSeconds(1);
+            
+            ballPossesion = BallPossesion.Player1;
+            AttachBallToPlayer(playerTransforms[0].transform);
         }
     }
 }

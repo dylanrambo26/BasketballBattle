@@ -6,8 +6,8 @@ public class PlayerController : MonoBehaviour
     
     private float horizontalInput;
     private float moveSpeed = 6f;
-    private float jumpShotForce = 9f;
-    private float blockJumpForce = 12f;
+    [SerializeField] float jumpShotForce = 9f;
+    [SerializeField] float blockJumpForce = 12f;
     private float jumpForce;
     public bool isPlayer1 = false;
 
@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
+        if (GameController.isGamePaused) return;
         if (isPlayer1)
         {
             if (Input.GetKeyDown(KeyCode.W) && isGrounded)
@@ -76,6 +76,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (GameController.isGamePaused) return;
         if (isPlayer1)
         {
             horizontalInput = Input.GetAxis("P1_Horizontal");
@@ -84,7 +85,6 @@ public class PlayerController : MonoBehaviour
         {
             horizontalInput = Input.GetAxis("P2_Horizontal");
         }
-
         rigidBody.linearVelocity = new Vector2(horizontalInput * moveSpeed, rigidBody.linearVelocity.y);
     }
 
