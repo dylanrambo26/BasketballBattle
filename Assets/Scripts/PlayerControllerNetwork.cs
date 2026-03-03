@@ -16,8 +16,11 @@ public class PlayerControllerNetwork : NetworkBehaviour
     
     private Rigidbody2D rigidBody;
 
-    public bool isGrounded = true;
+    //public bool isGrounded = true;
 
+    public NetworkVariable<bool> isGrounded = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
+        
     [Header("Player 2 Starting Values")]
     [SerializeField] private Material player2Material;
     [SerializeField] private Vector3 player2StartPos;
@@ -35,7 +38,7 @@ public class PlayerControllerNetwork : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded.Value)
         {
             /*jumpForce = ballMovementScript.IsPossessedBy(true) ? jumpShotForce : blockJumpForce;
             rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, jumpForce);*/
@@ -55,7 +58,7 @@ public class PlayerControllerNetwork : NetworkBehaviour
             float heldTime = Time.time - chargeStartTime;
             float chargeAmount = Mathf.Clamp01(heldTime / maxChargeTime);
                 
-            ShootBallServerRpc(chargeAmount);
+            //ShootBallServerRpc(chargeAmount);
         }
     }
 
@@ -68,33 +71,23 @@ public class PlayerControllerNetwork : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
+        if (!IsOwner) return;
         if (col.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            isGrounded.Value = true;
         }
         else if (col.gameObject.CompareTag("Ball"))
         {
-            RequestPossession(OwnerClientId);
+            //RequestPossession(OwnerClientId);
         }
     }
     
     private void OnCollisionExit2D(Collision2D col)
     {
+        if (!IsOwner) return;
         if (col.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false;
+            isGrounded.Value = false;
         }
-    }
-
-    [Rpc(SendTo.Server)]
-    void ShootBallServerRpc(float chargeAmount)
-    {
-        print($"Shot requested by player{OwnerClientId}");
-    }
-
-    [Rpc(SendTo.Server)]
-    void RequestPossession(ulong ownerClientId)
-    {
-        
     }
 }

@@ -204,7 +204,7 @@ MonoBehaviour:
   RotationInterpolationType: 0
   ScaleInterpolationType: 0
   PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
+  PositionMaxInterpolationTime: 0.05
   RotationLerpSmoothing: 1
   RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
@@ -260,3 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed56939b8d70d3c4bae24b2011953625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BallMovementNetwork
+  ShowTopMostFoldoutHeaderGroup: 1
+  ballPossesion: 0
+  PossessorClientId:
+    m_InternalValue: 18446744073709551615
