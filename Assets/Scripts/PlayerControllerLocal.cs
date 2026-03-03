@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerLocal : MonoBehaviour
 {
     
     private float horizontalInput;

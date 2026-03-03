@@ -8,7 +8,7 @@ public class BallMovement : MonoBehaviour
 {
     public Transform[] playerTransforms;
     private Rigidbody2D rigidBody;
-    public PlayerController[] playerControllerScripts;
+    public PlayerControllerLocal[] playerControllerScripts;
 
     private float dribbleSpeed = 5f;
 
@@ -33,8 +33,8 @@ public class BallMovement : MonoBehaviour
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-        playerControllerScripts[0] = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerController>();
-        playerControllerScripts[1] = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerController>();
+        playerControllerScripts[0] = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerControllerLocal>();
+        playerControllerScripts[1] = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerControllerLocal>();
         ballCollider = GetComponent<Collider2D>();
 
         transform.position = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0f, 4f), 0f);
