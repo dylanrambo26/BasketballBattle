@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 8185669}
   - component: {fileID: 8185671}
   m_Layer: 0
-  m_Name: HostOutOfBounds
+  m_Name: Test Boundary
   m_TagString: HostPlayerOutOfBounds
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -342,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 8185668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.55, y: 0.75685, z: 0}
+  m_LocalPosition: {x: 10.15, y: 0.75685, z: 0}
   m_LocalScale: {x: 1, y: 28.2624, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -394,143 +394,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &71803732
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 71803733}
-  - component: {fileID: 71803735}
-  - component: {fileID: 71803734}
-  m_Layer: 5
-  m_Name: WaitingForPlayersText
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &71803733
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71803732}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 515437597}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1048.2, y: 109.7}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &71803734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71803732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: Waiting For Additional Player To Join...
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 89f8a8140fcd9b846b6a38c9895f8de5, type: 2}
-  m_sharedMaterial: {fileID: 864103599504437895, guid: 89f8a8140fcd9b846b6a38c9895f8de5, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 53.6
-  m_fontSizeBase: 53.6
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &71803735
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71803732}
-  m_CullTransparentMesh: 1
 --- !u!1 &196393218
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,7 +1158,7 @@ GameObject:
   - component: {fileID: 419791946}
   m_Layer: 0
   m_Name: ScoreTrigger
-  m_TagString: leftPlayerScoreTrigger
+  m_TagString: Player2ScoreTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1733,7 +1596,6 @@ RectTransform:
   - {fileID: 2104673114}
   - {fileID: 196393219}
   - {fileID: 586403023}
-  - {fileID: 71803733}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1890,11 +1752,11 @@ GameObject:
   - component: {fileID: 543564422}
   m_Layer: 0
   m_Name: Trigger
-  m_TagString: rightPlayerScoreTrigger
+  m_TagString: Player1ScoreTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &543564421
 Transform:
   m_ObjectHideFlags: 0
@@ -2103,11 +1965,11 @@ GameObject:
   - component: {fileID: 584501129}
   m_Layer: 0
   m_Name: ScoreTrigger
-  m_TagString: rightPlayerScoreTrigger
+  m_TagString: Player1ScoreTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &584501128
 Transform:
   m_ObjectHideFlags: 0
@@ -2496,7 +2358,7 @@ GameObject:
   - component: {fileID: 802089110}
   - component: {fileID: 802089109}
   m_Layer: 0
-  m_Name: ClientOutOfBounds
+  m_Name: Test Boundary (1)
   m_TagString: ClientPlayerOutOfBounds
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2616,7 +2478,7 @@ Transform:
   m_GameObject: {fileID: 802089108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.58, y: 0.75685, z: 0}
+  m_LocalPosition: {x: -10.2, y: 0.75685, z: 0}
   m_LocalScale: {x: 1, y: 28.2624, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2900,7 +2762,7 @@ GameObject:
   - component: {fileID: 919955025}
   m_Layer: 0
   m_Name: UIController
-  m_TagString: UIController
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2912,18 +2774,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919955022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6566b30813388f2429f94dea893ff8e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UiController
-  leftPlayerScoreText: {fileID: 1876177852}
-  rightPlayerScoreText: {fileID: 1619285209}
+  player1ScoreText: {fileID: 1876177852}
+  player2ScoreText: {fileID: 1619285209}
   countDownText: {fileID: 470817386}
-  waitingForMorePlayersText: {fileID: 71803734}
-  timerText: {fileID: 1803998830}
-  halfText: {fileID: 7213995}
-  gameController: {fileID: 1863603381}
 --- !u!4 &919955024
 Transform:
   m_ObjectHideFlags: 0
@@ -2956,7 +2814,6 @@ MonoBehaviour:
   clientButton: {fileID: 681592932}
   serverButton: {fileID: 1934301940}
   statusText: {fileID: 196393220}
-  scoreboardUIParent: {fileID: 586403022}
 --- !u!1 &1009304363
 GameObject:
   m_ObjectHideFlags: 0
@@ -4625,15 +4482,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1863603379}
   - component: {fileID: 1863603378}
-  - component: {fileID: 1863603380}
-  - component: {fileID: 1863603381}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1863603378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4641,7 +4496,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863603377}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b97b7b2d57956ad48a413f3024feee15, type: 3}
   m_Name: 
@@ -4665,50 +4520,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1863603380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863603377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4141089229
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
---- !u!114 &1863603381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863603377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f732a6a565f6e45a7a3cc0ecdf2330, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameControllerNetwork
-  ShowTopMostFoldoutHeaderGroup: 1
-  leftScore:
-    m_InternalValue: 0
-  rightScore:
-    m_InternalValue: 0
-  isGamePaused:
-    m_InternalValue: 1
 --- !u!1 &1876177850
 GameObject:
   m_ObjectHideFlags: 0

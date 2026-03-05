@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UiController : MonoBehaviour
+public class UiControllerOld : MonoBehaviour
 {
     public TextMeshProUGUI player1ScoreText;
     public TextMeshProUGUI player2ScoreText;

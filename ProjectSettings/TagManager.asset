@@ -12,6 +12,9 @@ TagManager:
   - Player2ScoreTrigger
   - HostPlayerOutOfBounds
   - ClientPlayerOutOfBounds
+  - leftPlayerScoreTrigger
+  - rightPlayerScoreTrigger
+  - UIController
   layers:
   - Default
   - TransparentFX
