@@ -10,6 +10,8 @@ TagManager:
   - Player2
   - Player1ScoreTrigger
   - Player2ScoreTrigger
+  - HostPlayerOutOfBounds
+  - ClientPlayerOutOfBounds
   layers:
   - Default
   - TransparentFX

@@ -24,10 +24,11 @@ public class PlayerControllerNetwork : NetworkBehaviour
     [Header("Player 2 Starting Values")]
     [SerializeField] private Material player2Material;
     [SerializeField] private Vector3 player2StartPos;
-    //public BallMovement ballMovementScript;
+    private BallMovementNetwork ballMovementScript;
     public override void OnNetworkSpawn()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        ballMovementScript = GameObject.FindGameObjectWithTag("Ball").GetComponent<BallMovementNetwork>();
         if (OwnerClientId != 0)
         {
             gameObject.GetComponent<SpriteRenderer>().material = player2Material;
@@ -57,14 +58,14 @@ public class PlayerControllerNetwork : NetworkBehaviour
             isChargingShot = false;
             float heldTime = Time.time - chargeStartTime;
             float chargeAmount = Mathf.Clamp01(heldTime / maxChargeTime);
-                
-            //ShootBallServerRpc(chargeAmount);
+
+            ballMovementScript.RequestShootServerRpc(chargeAmount);
         }
     }
 
     private void FixedUpdate()
     {
-        if (GameController.isGamePaused || !IsOwner) return; //Only move client player when game is not paused
+        if (/*GameController.isGamePaused || */!IsOwner) return; //Only move client player when game is not paused
         float horizontalInput = Input.GetAxis("Horizontal");
         rigidBody.linearVelocity = new Vector2(horizontalInput * moveSpeed, rigidBody.linearVelocity.y);
     }
