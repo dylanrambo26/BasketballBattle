@@ -14,7 +14,7 @@ namespace Network_Multiplayer
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI halfText;
     
-        private const int countdownStart = 3;
+        public const int countdownStart = 3;
         [SerializeField] private GameControllerNetwork gameController;
     
         private void Start()
@@ -45,7 +45,6 @@ namespace Network_Multiplayer
 
         public IEnumerator Countdown()
         {
-            GameController.isGamePaused = true;
             countDownText.gameObject.SetActive(true);
             for (int i = countdownStart; i > 0; i--)
             {
@@ -58,7 +57,6 @@ namespace Network_Multiplayer
 
             yield return new WaitForSeconds(0.5f);
             countDownText.gameObject.SetActive(false);
-            GameController.isGamePaused = false;
         }
     }
 }

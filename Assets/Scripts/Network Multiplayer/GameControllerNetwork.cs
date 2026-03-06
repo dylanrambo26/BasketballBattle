@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
 
 namespace Network_Multiplayer
 {
@@ -15,23 +16,37 @@ namespace Network_Multiplayer
         public NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(true,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-        public NetworkVariable<float> currentTime = new NetworkVariable<float>(120f,
+        public NetworkVariable<float> currentTime = new NetworkVariable<float>(10f,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public NetworkVariable<int> currentHalf = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
 
+        public NetworkVariable<bool> endOfHalf = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server);
+        
         private UiController uiControllerScript;
-
-        private void Start()
-        {
-            currentTime.OnValueChanged += OnTimeChanged;
-            OnTimeChanged(0, currentTime.Value);
-        }
-
+        
         public override void OnNetworkSpawn()
         {
-            uiControllerScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<UiController>();
+            if (uiControllerScript == null)
+            {
+                uiControllerScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<UiController>();
+            }
+
+            currentTime.OnValueChanged += OnTimeChanged;
+            endOfHalf.OnValueChanged += OnEndOfHalfChanged;
+            
+            if (uiControllerScript != null)
+            {
+                OnTimeChanged(0, currentTime.Value);
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            currentTime.OnValueChanged -= OnTimeChanged;
+            endOfHalf.OnValueChanged -= OnEndOfHalfChanged;
         }
 
         public void AddScore(int scoringSide)
@@ -50,18 +65,67 @@ namespace Network_Multiplayer
         private void OnTimeChanged(float oldVal, float newVal)
         {
             TimeSpan time = TimeSpan.FromSeconds(newVal);
+            if (uiControllerScript == null)
+            {
+                print("null");
+            }
             uiControllerScript.timerText.text = newVal < 60 ? time.ToString(@"m\:ss\.f") : time.ToString(@"m\:ss");
+        }
+
+        private void OnEndOfHalfChanged(bool oldVal, bool newVal)
+        {
+            if (newVal)
+            {
+                StartCountdownRpc(endOfHalf.Value);
+            }
+        }
+
+        private void EndOfHalf()
+        {
+            if (!IsServer) return;
+            
+            currentTime.Value = 120;
+            currentHalf.Value++;
+            isGamePaused.Value = true;
+            endOfHalf.Value = true;
+            StartCoroutine(UnpauseAfterCountdown());
+        }
+
+        private IEnumerator UnpauseAfterCountdown()
+        {
+            float waitTime = UiController.countdownStart + 0.5f;
+            yield return new WaitForSeconds(waitTime);
+
+            isGamePaused.Value = false;
+            endOfHalf.Value = false;
+        }
+        
+        [Rpc(SendTo.ClientsAndHost)]
+        public void StartCountdownRpc(bool isNewHalf)
+        {
+            if (isNewHalf)
+            {
+                uiControllerScript.halfText.text = "2nd Half";
+            }
+            uiControllerScript.StartCoroutine(uiControllerScript.Countdown());
         }
 
         private void Update()
         {
             if (!IsServer) return;
-            isGamePaused.Value = NetworkManager.Singleton.ConnectedClients.Count < 2;
-            uiControllerScript.EnableWaitingForPlayersText(isGamePaused.Value);
+
+            bool waitingForPlayers = NetworkManager.Singleton.ConnectedClients.Count < 2;
+            isGamePaused.Value = waitingForPlayers || endOfHalf.Value;
+            uiControllerScript.EnableWaitingForPlayersText(waitingForPlayers);
 
             if (!isGamePaused.Value)
             {
                 currentTime.Value = Mathf.Max(0f, currentTime.Value - Time.deltaTime);
+            }
+
+            if (currentTime.Value <= 0f && !endOfHalf.Value)
+            {
+                EndOfHalf();
             }
         }
     }
