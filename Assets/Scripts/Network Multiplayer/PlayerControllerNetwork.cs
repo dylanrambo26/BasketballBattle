@@ -26,10 +26,13 @@ namespace Network_Multiplayer
         [SerializeField] private Material player2Material;
         [SerializeField] private Vector3 player2StartPos;
         private BallMovementNetwork ballMovementScript;
+        private GameControllerNetwork gameControllerScript;
+        
         public override void OnNetworkSpawn()
         {
             rigidBody = GetComponent<Rigidbody2D>();
             ballMovementScript = GameObject.FindGameObjectWithTag("Ball").GetComponent<BallMovementNetwork>();
+            gameControllerScript = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerNetwork>();
             if (OwnerClientId != 0)
             {
                 gameObject.GetComponent<SpriteRenderer>().material = player2Material;
@@ -66,7 +69,7 @@ namespace Network_Multiplayer
 
         private void FixedUpdate()
         {
-            if (/*GameController.isGamePaused || */!IsOwner) return; //Only move client player when game is not paused
+            if (gameControllerScript.isGamePaused.Value || !IsOwner) return; //Only move client player when game is not paused
             float horizontalInput = Input.GetAxis("Horizontal");
             rigidBody.linearVelocity = new Vector2(horizontalInput * moveSpeed, rigidBody.linearVelocity.y);
         }
@@ -77,10 +80,6 @@ namespace Network_Multiplayer
             if (col.gameObject.CompareTag("Ground"))
             {
                 isGrounded.Value = true;
-            }
-            else if (col.gameObject.CompareTag("Ball"))
-            {
-                //RequestPossession(OwnerClientId);
             }
         }
     

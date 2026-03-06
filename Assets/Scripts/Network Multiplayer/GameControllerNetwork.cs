@@ -25,7 +25,11 @@ namespace Network_Multiplayer
         public NetworkVariable<bool> endOfHalf = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
         
+        public NetworkVariable<bool> gameStarted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server);
+        
         private UiController uiControllerScript;
+        private bool startGameCountdownRunning = false;
         
         public override void OnNetworkSpawn()
         {
@@ -91,19 +95,30 @@ namespace Network_Multiplayer
             StartCoroutine(UnpauseAfterCountdown());
         }
 
+        private void StartGameCountdown()
+        {
+            if (!IsServer) return;
+
+            startGameCountdownRunning = true;
+            StartCountdownRpc(false); 
+            StartCoroutine(UnpauseAfterCountdown());
+        }
+
         private IEnumerator UnpauseAfterCountdown()
         {
             float waitTime = UiController.countdownStart + 0.5f;
             yield return new WaitForSeconds(waitTime);
 
+            gameStarted.Value = true;
             isGamePaused.Value = false;
             endOfHalf.Value = false;
+            startGameCountdownRunning = false;
         }
         
         [Rpc(SendTo.ClientsAndHost)]
-        public void StartCountdownRpc(bool isNewHalf)
+        public void StartCountdownRpc(bool isSecondHalf)
         {
-            if (isNewHalf)
+            if (isSecondHalf)
             {
                 uiControllerScript.halfText.text = "2nd Half";
             }
@@ -115,9 +130,22 @@ namespace Network_Multiplayer
             if (!IsServer) return;
 
             bool waitingForPlayers = NetworkManager.Singleton.ConnectedClients.Count < 2;
-            isGamePaused.Value = waitingForPlayers || endOfHalf.Value;
+
+            if (startGameCountdownRunning)
+            {
+                isGamePaused.Value = true;
+            }
+            else
+            {
+                isGamePaused.Value = waitingForPlayers || endOfHalf.Value || !gameStarted.Value;
+            }
             uiControllerScript.EnableWaitingForPlayersText(waitingForPlayers);
 
+            if (!waitingForPlayers && !gameStarted.Value && !endOfHalf.Value && !startGameCountdownRunning)
+            {
+                StartGameCountdown();
+            }
+            
             if (!isGamePaused.Value)
             {
                 currentTime.Value = Mathf.Max(0f, currentTime.Value - Time.deltaTime);
