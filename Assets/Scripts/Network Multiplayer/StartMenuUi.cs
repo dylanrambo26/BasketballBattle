@@ -8,30 +8,36 @@ namespace Network_Multiplayer
 {
     public class StartMenuUi : MonoBehaviour
     {
+        [Header("UI References")]
         public GameObject startMenuButtonParent;
         [SerializeField] private Button hostButton;
         [SerializeField] private Button clientButton;
         [SerializeField] private Button serverButton;
         [SerializeField] private TextMeshProUGUI statusText;
         [SerializeField] private GameObject scoreboardUIParent;
-
+        
+        //Script references
         private GameControllerNetwork gameControllerScript;
         private UiController uiControllerScript;
 
         private void Start()
         {
+            //Assign script references
             gameControllerScript =
                 GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerNetwork>();
             uiControllerScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<UiController>();
-            TryHookNetworkEvents();
+            
+            //Try to add event listeners for client disconnects and server disconnections
+            TryConnectNetworkEvents();
         }
         
-        private void TryHookNetworkEvents()
+        //Add listeners for OnClientDisconnectCallback and OnServerStopped for when the players quit at the end of game
+        private void TryConnectNetworkEvents()
         {
+            //Continue trying to connect listeners until the NetworkManager has completely started
             if (NetworkManager.Singleton == null)
             {
-                // try again next frame
-                Invoke(nameof(TryHookNetworkEvents), 0.1f);
+                Invoke(nameof(TryConnectNetworkEvents), 0.1f);
                 return;
             }
 
@@ -40,11 +46,9 @@ namespace Network_Multiplayer
 
             NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
             NetworkManager.Singleton.OnServerStopped += OnServerStopped;
-
-            Debug.Log("StartMenuUi: hooked NetworkManager callbacks");
         }
 
-        
+        //Add listeners for start menu buttons
         private void Awake()
         {
             hostButton.onClick.AddListener(StartHost);
@@ -52,6 +56,7 @@ namespace Network_Multiplayer
             serverButton.onClick.AddListener(StartServer);
         }
 
+        //Disconnect listeners
         private void OnDisable()
         {
             if (NetworkManager.Singleton == null) return;
@@ -59,43 +64,54 @@ namespace Network_Multiplayer
             NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
         }
 
+        //When the client disconnects reset back to start menu and disable scoreboard
         private void OnClientDisconnected(ulong clientId)
         {
+            //Only execute the network manager is up and running
             if (NetworkManager.Singleton == null) return;
+            
+            //Only execute if the clientId matches the localClientId
             if (clientId != NetworkManager.Singleton.LocalClientId) return;
+            
+            //Reset ui to start menu
             uiControllerScript.hostEndGameMenu.SetActive(false);
             uiControllerScript.clientEndGameMenu.SetActive(false);
             uiControllerScript.gameOverText.gameObject.SetActive(false);
             
             EnableStartMenuParent(true);
             scoreboardUIParent.SetActive(false);
-            //statusText.text = "Not Connected";
         }
 
+        //Execute when the server is disconnected
         private void OnServerStopped(bool _)
         {
             EnableStartMenuParent(true);
             scoreboardUIParent.SetActive(false);
         }
 
+        //Helper for startmenu enabling
         public void EnableStartMenuParent(bool enable)
         {
             startMenuButtonParent.gameObject.SetActive(enable);
         }
 
+        //Helper for scoreboard enabling
         private void EnableScoreboardParent(bool enable)
         {
-            scoreboardUIParent.gameObject.SetActive(true);
+            scoreboardUIParent.gameObject.SetActive(enable);
         }
 
+        //Start the host on the network manager, activate/deactivate proper ui elements, reset the game variables
         private void StartHost()
         {
             NetworkManager.Singleton.StartHost();
             EnableStartMenuParent(false);
             EnableScoreboardParent(true);
             
-            gameControllerScript.ResetGameVariables();
+            gameControllerScript.ResetGameVariables(); //Doesn't need IsServer because host is server and host
         }
+        
+        //Start the client on the network manager
         private void StartClient()
         {
             NetworkManager.Singleton.StartClient();
@@ -103,13 +119,15 @@ namespace Network_Multiplayer
             EnableScoreboardParent(true);
             
         }
+        
+        //Start the server on the netork manager
         private void StartServer()
         {
             NetworkManager.Singleton.StartServer();
             EnableStartMenuParent(false);
             EnableScoreboardParent(true);
         }
-
+        
         private void UpdateUI()
         {
             //network manager doesn't exist yet
@@ -129,11 +147,14 @@ namespace Network_Multiplayer
                 statusText.text = "Not Connected";
                 return;
             }
+            
+            //Enable/Disable proper ui and update the connection text in the top left of screen
             EnableStartMenuParent(false);
             scoreboardUIParent.SetActive(true);
             UpdateStatusText();
         }
 
+        //Used to update the connection text
         private void UpdateStatusText()
         {
             var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
@@ -141,7 +162,7 @@ namespace Network_Multiplayer
             string modeText = "Mode: " + mode;
             statusText.text = $"{transport}\n{modeText}";
         }
-
+        
         private void Update()
         {
             UpdateUI();
