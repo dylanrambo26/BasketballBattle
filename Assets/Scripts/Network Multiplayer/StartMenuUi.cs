@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,6 +14,36 @@ namespace Network_Multiplayer
         [SerializeField] private Button serverButton;
         [SerializeField] private TextMeshProUGUI statusText;
         [SerializeField] private GameObject scoreboardUIParent;
+
+        private GameControllerNetwork gameControllerScript;
+        private UiController uiControllerScript;
+
+        private void Start()
+        {
+            gameControllerScript =
+                GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerNetwork>();
+            uiControllerScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<UiController>();
+            TryHookNetworkEvents();
+        }
+        
+        private void TryHookNetworkEvents()
+        {
+            if (NetworkManager.Singleton == null)
+            {
+                // try again next frame
+                Invoke(nameof(TryHookNetworkEvents), 0.1f);
+                return;
+            }
+
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+
+            NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
+            NetworkManager.Singleton.OnServerStopped += OnServerStopped;
+
+            Debug.Log("StartMenuUi: hooked NetworkManager callbacks");
+        }
+
         
         private void Awake()
         {
@@ -21,12 +52,38 @@ namespace Network_Multiplayer
             serverButton.onClick.AddListener(StartServer);
         }
 
-        private void DisableStartMenuParent()
+        private void OnDisable()
         {
-            startMenuButtonParent.gameObject.SetActive(false);
+            if (NetworkManager.Singleton == null) return;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
         }
 
-        private void EnableScoreboardParent()
+        private void OnClientDisconnected(ulong clientId)
+        {
+            if (NetworkManager.Singleton == null) return;
+            if (clientId != NetworkManager.Singleton.LocalClientId) return;
+            uiControllerScript.hostEndGameMenu.SetActive(false);
+            uiControllerScript.clientEndGameMenu.SetActive(false);
+            uiControllerScript.gameOverText.gameObject.SetActive(false);
+            
+            EnableStartMenuParent(true);
+            scoreboardUIParent.SetActive(false);
+            //statusText.text = "Not Connected";
+        }
+
+        private void OnServerStopped(bool _)
+        {
+            EnableStartMenuParent(true);
+            scoreboardUIParent.SetActive(false);
+        }
+
+        public void EnableStartMenuParent(bool enable)
+        {
+            startMenuButtonParent.gameObject.SetActive(enable);
+        }
+
+        private void EnableScoreboardParent(bool enable)
         {
             scoreboardUIParent.gameObject.SetActive(true);
         }
@@ -34,41 +91,47 @@ namespace Network_Multiplayer
         private void StartHost()
         {
             NetworkManager.Singleton.StartHost();
-            DisableStartMenuParent();
-            EnableScoreboardParent();
+            EnableStartMenuParent(false);
+            EnableScoreboardParent(true);
+            
+            gameControllerScript.ResetGameVariables();
         }
         private void StartClient()
         {
             NetworkManager.Singleton.StartClient();
-            DisableStartMenuParent();
-            EnableScoreboardParent();
+            EnableStartMenuParent(false);
+            EnableScoreboardParent(true);
             
         }
         private void StartServer()
         {
             NetworkManager.Singleton.StartServer();
-            DisableStartMenuParent();
-            EnableScoreboardParent();
+            EnableStartMenuParent(false);
+            EnableScoreboardParent(true);
         }
 
         private void UpdateUI()
         {
+            //network manager doesn't exist yet
             if (NetworkManager.Singleton == null)
             {
-                DisableStartMenuParent();
-                statusText.text = "NetworkManager not found";
+                EnableStartMenuParent(true);
+                scoreboardUIParent.SetActive(true);
+                statusText.text = "Not Connected";
+                return;
             }
 
+            //network manager exists but isn't connected
             if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
             {
+                EnableStartMenuParent(true);
+                scoreboardUIParent.SetActive(false);
                 statusText.text = "Not Connected";
+                return;
             }
-            else
-            {
-                DisableStartMenuParent();
-                UpdateStatusText();
-            }
-        
+            EnableStartMenuParent(false);
+            scoreboardUIParent.SetActive(true);
+            UpdateStatusText();
         }
 
         private void UpdateStatusText()

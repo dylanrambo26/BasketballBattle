@@ -42,7 +42,7 @@ namespace Network_Multiplayer
 
         private void Update()
         {
-            if (!IsOwner) return;
+            if (gameControllerScript.isGamePaused.Value ||!IsOwner) return;
             if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded.Value)
             {
                 /*jumpForce = ballMovementScript.IsPossessedBy(true) ? jumpShotForce : blockJumpForce;

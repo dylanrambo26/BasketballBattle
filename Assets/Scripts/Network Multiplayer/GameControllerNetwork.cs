@@ -2,6 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 namespace Network_Multiplayer
 {
@@ -16,7 +17,7 @@ namespace Network_Multiplayer
         public NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(true,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-        public NetworkVariable<float> currentTime = new NetworkVariable<float>(10f,
+        public NetworkVariable<float> currentTime = new NetworkVariable<float>(ClockResetTime,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public NetworkVariable<int> currentHalf = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone,
@@ -27,15 +28,25 @@ namespace Network_Multiplayer
         
         public NetworkVariable<bool> gameStarted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
+
+        public NetworkVariable<bool> endOfGame = new NetworkVariable<bool>(false,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         
         private UiController uiControllerScript;
         private bool startGameCountdownRunning = false;
-        
+        private StartMenuUi startMenuUiScript;
+
+        private const float ClockResetTime = 5f;
         public override void OnNetworkSpawn()
         {
             if (uiControllerScript == null)
             {
                 uiControllerScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<UiController>();
+            }
+
+            if (startMenuUiScript == null)
+            {
+                startMenuUiScript = GameObject.FindGameObjectWithTag("UIController").GetComponent<StartMenuUi>();
             }
 
             currentTime.OnValueChanged += OnTimeChanged;
@@ -87,9 +98,20 @@ namespace Network_Multiplayer
         private void EndOfHalf()
         {
             if (!IsServer) return;
-            
-            currentTime.Value = 120;
+
+            if (currentHalf.Value == 2)
+            {
+                currentTime.Value = 0;
+                endOfGame.Value = true;
+                endOfHalf.Value = false;
+                
+                bool leftWins = leftScore.Value > rightScore.Value;
+                EndOfGameRpc(leftWins);
+                return;
+            }
+            currentTime.Value = ClockResetTime;
             currentHalf.Value++;
+            
             isGamePaused.Value = true;
             endOfHalf.Value = true;
             StartCoroutine(UnpauseAfterCountdown());
@@ -116,7 +138,7 @@ namespace Network_Multiplayer
         }
         
         [Rpc(SendTo.ClientsAndHost)]
-        public void StartCountdownRpc(bool isSecondHalf)
+        private void StartCountdownRpc(bool isSecondHalf)
         {
             if (isSecondHalf)
             {
@@ -125,12 +147,63 @@ namespace Network_Multiplayer
             uiControllerScript.StartCoroutine(uiControllerScript.Countdown());
         }
 
+        [Rpc(SendTo.ClientsAndHost)]
+        private void EndOfGameRpc(bool leftWins)
+        {
+            uiControllerScript.halfText.text = "Final";
+            uiControllerScript.gameOverText.text =
+                leftWins ? "Game Over: Left Player Wins!" : "Game Over: Right Player Wins!";
+            uiControllerScript.gameOverText.gameObject.SetActive(true);
+            uiControllerScript.hostEndGameMenu.SetActive(IsHost);
+            uiControllerScript.clientEndGameMenu.SetActive(!IsHost);
+        }
+
+        [Rpc(SendTo.Server)]
+        public void RequestRestartRpc()
+        {
+            if (!IsServer) return;
+            ResetGameVariables();
+        }
+        
+        [Rpc(SendTo.ClientsAndHost)]
+        private void HideEndGameMenusRpc()
+        {
+            uiControllerScript.hostEndGameMenu.SetActive(false);
+            uiControllerScript.clientEndGameMenu.SetActive(false);
+            uiControllerScript.gameOverText.gameObject.SetActive(false);
+            uiControllerScript.halfText.text = "1st Half";
+        }
+
+        public void ResetGameVariables()
+        {
+            if (!IsServer) return;
+            endOfGame.Value = false;
+            endOfHalf.Value = false;
+            gameStarted.Value = false;
+            startGameCountdownRunning = false;
+
+            currentHalf.Value = 1;
+            currentTime.Value = ClockResetTime;
+            leftScore.Value = 0;
+            rightScore.Value = 0;
+            
+            HideEndGameMenusRpc();
+        }
+        
+
         private void Update()
         {
             if (!IsServer) return;
 
+            if (NetworkManager.Singleton == null) return;
             bool waitingForPlayers = NetworkManager.Singleton.ConnectedClients.Count < 2;
 
+            if (endOfGame.Value)
+            {
+                isGamePaused.Value = true;
+                return;
+            }
+            
             if (startGameCountdownRunning)
             {
                 isGamePaused.Value = true;
@@ -151,7 +224,7 @@ namespace Network_Multiplayer
                 currentTime.Value = Mathf.Max(0f, currentTime.Value - Time.deltaTime);
             }
 
-            if (currentTime.Value <= 0f && !endOfHalf.Value)
+            if (currentTime.Value <= 0f && !endOfHalf.Value && !endOfGame.Value)
             {
                 EndOfHalf();
             }
