@@ -1,21 +1,24 @@
 using System;
-using System.Threading;
 using Network_Multiplayer;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GameController : MonoBehaviour
 {
+    [Header("UI References")]
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI halfText;
+   
+    //Player score variables
     public int player1Score { get; private set; }
     public int player2Score { get; private set; }
+   
+    //Game state variables
     private int currentHalf = 1;
-
     public float currentTime = 120;
     public static bool isGamePaused = true;
 
+    [Header("Script References")]
     public UiController uiControllerScript;
     
     public void IncrementP1Score()
@@ -30,6 +33,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        //Only update time and half if game is not paused
         if (isGamePaused) return;
         if (currentTime > 0)
         {

@@ -5,29 +5,35 @@ using UnityEngine;
 
 public class UiControllerOld : MonoBehaviour
 {
+    [Header("UI References")]
     public TextMeshProUGUI player1ScoreText;
     public TextMeshProUGUI player2ScoreText;
     public TextMeshProUGUI countDownText;
     
+    //Countdown duration
     private const int countdownStart = 3;
+    
+    //Script References
     private GameController gameController;
     
     private void Start()
     {
+        //Assign gameController and start the countdown before game starts
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         StartCoroutine(Countdown());
     }
 
+    //Update Score UI
     public void UpdateP1Score()
     {
         player1ScoreText.text = gameController.player1Score.ToString();
     }
-    
     public void UpdateP2Score()
     {
         player2ScoreText.text = gameController.player2Score.ToString();
     }
 
+    //Starts a three second countdown
     public IEnumerator Countdown()
     {
         GameController.isGamePaused = true;

@@ -6,54 +6,67 @@ using Random = UnityEngine.Random;
 
 public class BallMovement : MonoBehaviour
 {
+    //References
     public Transform[] playerTransforms;
     private Rigidbody2D rigidBody;
     public PlayerControllerLocal[] playerControllerScripts;
+    private Collider2D ballCollider;
 
     private float dribbleSpeed = 5f;
 
+    //Dribble Variables
     public bool isPossessed;
     private float dribbleDistanceFromBody = 1f;
     private float inAirPosition = 1f;
     private Vector3 dribbleStartPos = new Vector3(1f, -0.5f, 0);
+    
+    //Shot Variables
     private float shotForce = 12f;
     private float minArc = 0.2f;
     private float maxArc = 2f;
-    //private float arcUp = 2;
-
-    private Collider2D ballCollider;
+    
+    //Ball out of bounds locations
     private float player1OutOfBounds = 10f;
     private float player2OutOfBounds = -10f;
     
+    //BallPossession states
     public enum BallPossesion { None, Player1, Player2}
     public BallPossesion ballPossesion = BallPossesion.None;
 
+    //Events for scoring
     public UnityEvent player1Score;
     public UnityEvent player2Score;
     private void Start()
     {
+        //Assign references
         rigidBody = GetComponent<Rigidbody2D>();
         playerControllerScripts[0] = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerControllerLocal>();
         playerControllerScripts[1] = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerControllerLocal>();
         ballCollider = GetComponent<Collider2D>();
 
+        //Set ball to random start point
         transform.position = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0f, 4f), 0f);
     }
 
     private void FixedUpdate()
     {
+        //Give ball to player 1 if player 2 shoots it out of bounds
         if (transform.position.x < player2OutOfBounds)
         {
             ballPossesion = BallPossesion.Player1;
             AttachBallToPlayer(playerTransforms[0]);
         }
+        //Give ball to player 2 if player 1 shoots it out of bounds
         else if (transform.position.x > player1OutOfBounds)
         {
             ballPossesion = BallPossesion.Player2;
             AttachBallToPlayer(playerTransforms[1]);
         }
         
+        //Don't dribble if ball isn't possessed
         if (ballPossesion == BallPossesion.None) return;
+        
+        //Dribble motion when ball is possessed by player1
         if (ballPossesion == BallPossesion.Player1)
         {
             if (playerControllerScripts[0].isGrounded)
@@ -67,6 +80,7 @@ public class BallMovement : MonoBehaviour
             }
                 
         }
+        //Dribble motion when ball is possessed by player2, ball is placed on left side of player2
         else if(ballPossesion == BallPossesion.Player2)
         {
             if (playerControllerScripts[1].isGrounded)
@@ -81,6 +95,7 @@ public class BallMovement : MonoBehaviour
         }
     }
 
+    //Change possession when the ball collides with a player
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Player1") && ballPossesion == BallPossesion.None)
@@ -95,6 +110,7 @@ public class BallMovement : MonoBehaviour
         }
     }
 
+    //Attach the ball to the player, disable rigidbody and collider physics when dribbling
     private void AttachBallToPlayer(Transform player)
     {
         rigidBody.linearVelocity = Vector2.zero;
@@ -109,6 +125,7 @@ public class BallMovement : MonoBehaviour
         transform.localPosition = new Vector3(ballRelativeToPlayerX, 0, 0);
     }
 
+    //Shoot the ball and apply specific arc based on charge amount from player input
     public void ShootBall(bool isPlayer1, float chargeAmount)
     {
         chargeAmount = Mathf.Clamp01(chargeAmount);
@@ -127,13 +144,14 @@ public class BallMovement : MonoBehaviour
         rigidBody.AddForce(direction * shotForce, ForceMode2D.Impulse);
     }
 
+    //Check if possessed by player 1 or player 2
     public bool IsPossessedBy(bool isPlayer1)
     {
         return (isPlayer1 && ballPossesion == BallPossesion.Player1) ||
                (!isPlayer1 && ballPossesion == BallPossesion.Player2);
     }
-    //TODO Fix ball not shooting when dribbling on the ground
 
+    //Make sure ball drops through net visually when ball is scored
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Player1ScoreTrigger"))
@@ -146,6 +164,7 @@ public class BallMovement : MonoBehaviour
         }
     }
 
+    //Increment score for the corresponding player and wait for 1 second for visual drop through
     private IEnumerator BallDropThroughNet(bool isPlayer1Score)
     {
         if (isPlayer1Score)
