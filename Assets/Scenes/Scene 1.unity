@@ -3075,22 +3075,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1072629037
       objectReference: {fileID: 0}
-    - target: {fileID: -5572922512420944426, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
-      propertyPath: ScaleInterpolationType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -5572922512420944426, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
-      propertyPath: PositionInterpolationType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -5572922512420944426, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
-      propertyPath: RotationInterpolationType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -2697705553116314724, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
-      propertyPath: AutoUpdateKinematicState
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 1886599617781219236, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
+      propertyPath: gameControllerScript
+      value: 
+      objectReference: {fileID: 1863603381}
     - target: {fileID: 3605683014236234976, guid: c12f749afda5ecf49bb3a5f1ccd05de6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3726,7 +3714,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 919955024}
-  - component: {fileID: 919955023}
+  - component: {fileID: 919955026}
   - component: {fileID: 919955025}
   m_Layer: 0
   m_Name: UIController
@@ -3735,32 +3723,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &919955023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919955022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6566b30813388f2429f94dea893ff8e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UiController
-  leftPlayerScoreText: {fileID: 1876177852}
-  rightPlayerScoreText: {fileID: 1619285209}
-  countDownText: {fileID: 470817386}
-  waitingForMorePlayersText: {fileID: 71803734}
-  hostPlayAgainButton: {fileID: 432916892}
-  hostQuitButton: {fileID: 1377322711}
-  clientQuitButton: {fileID: 143893226}
-  clientWaitingForHostText: {fileID: 401437078}
-  gameOverText: {fileID: 74465891}
-  timerText: {fileID: 1803998830}
-  halfText: {fileID: 7213995}
-  hostEndGameMenu: {fileID: 727673722}
-  clientEndGameMenu: {fileID: 1445737612}
-  gameController: {fileID: 1863603381}
 --- !u!4 &919955024
 Transform:
   m_ObjectHideFlags: 0
@@ -3785,15 +3747,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 919955022}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbd3da9acb2529242bb1e7a8ba370d87, type: 3}
+  m_Script: {fileID: 11500000, guid: db23c46cc0d8a3a4989a07fd9a00d5de, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIControllerNetwork
+  m_EditorClassIdentifier: Assembly-CSharp::Network_Multiplayer.StartMenuUi
   startMenuButtonParent: {fileID: 2104673113}
   hostButton: {fileID: 200322959}
   clientButton: {fileID: 681592932}
   serverButton: {fileID: 1934301940}
   statusText: {fileID: 196393220}
   scoreboardUIParent: {fileID: 586403022}
+--- !u!114 &919955026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919955022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7638f8c93dc8714aa5f6368859203dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Network_Multiplayer.UiController
+  leftPlayerScoreText: {fileID: 1876177852}
+  rightPlayerScoreText: {fileID: 1619285209}
+  countDownText: {fileID: 470817386}
+  waitingForMorePlayersText: {fileID: 71803734}
+  hostPlayAgainButton: {fileID: 432916892}
+  hostQuitButton: {fileID: 1377322711}
+  clientQuitButton: {fileID: 143893226}
+  clientWaitingForHostText: {fileID: 401437078}
+  gameOverText: {fileID: 74465891}
+  timerText: {fileID: 1803998830}
+  halfText: {fileID: 7213995}
+  hostEndGameMenu: {fileID: 727673722}
+  clientEndGameMenu: {fileID: 1445737612}
+  gameController: {fileID: 1863603381}
 --- !u!1 &1044375121
 GameObject:
   m_ObjectHideFlags: 0
@@ -5251,7 +5239,7 @@ MonoBehaviour:
   timerText: {fileID: 1803998830}
   halfText: {fileID: 7213995}
   currentTime: 120
-  uiControllerScript: {fileID: 919955023}
+  uiControllerScript: {fileID: 0}
 --- !u!4 &1863603379
 Transform:
   m_ObjectHideFlags: 0
@@ -5301,9 +5289,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1863603377}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f732a6a565f6e45a7a3cc0ecdf2330, type: 3}
+  m_Script: {fileID: 11500000, guid: bfb0a76401185b64d9a3b68cf09b5d27, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameControllerNetwork
+  m_EditorClassIdentifier: Assembly-CSharp::Network_Multiplayer.GameControllerNetwork
   ShowTopMostFoldoutHeaderGroup: 1
   leftScore:
     m_InternalValue: 0
@@ -5312,7 +5300,7 @@ MonoBehaviour:
   isGamePaused:
     m_InternalValue: 1
   currentTime:
-    m_InternalValue: 10
+    m_InternalValue: 60
   currentHalf:
     m_InternalValue: 1
   endOfHalf:
