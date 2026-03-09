@@ -142,7 +142,8 @@ namespace Network_Multiplayer
         private void StartGameCountdown()
         {
             if (!IsServer) return;
-
+            
+            ballMovementScript.SetRandomStartPos();
             startGameCountdownRunning = true;
             StartCountdownRpc(false); 
             StartCoroutine(UnpauseAfterCountdown());
@@ -214,7 +215,8 @@ namespace Network_Multiplayer
             currentTime.Value = ClockResetTime;
             leftScore.Value = 0;
             rightScore.Value = 0;
-            
+           
+            ballMovementScript.PossessorClientId.Value = BallMovementNetwork.NoOwner;
             HideEndGameMenusRpc();
         }
         
